@@ -22,7 +22,10 @@ app.use(express.json());
 
 // Static files
 app.set('view engine', 'html');
-app.set('views', path.join(__dirname, '..' ,'app', 'view', 'public'));
+app.set('views', [
+    path.join(__dirname, '..', 'app', 'view', 'public'),
+    path.join(__dirname, '..', 'app', 'view', 'private')
+]);
 app.use('/script', express.static(path.join(__dirname, '..', 'app', 'script')));
 app.use('/style', express.static(path.join(__dirname, '..', 'app', 'style')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'app', 'view', 'assets')));
