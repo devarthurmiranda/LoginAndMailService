@@ -1,15 +1,18 @@
-# Web Engineering
+ Web Engineering
 
-O objetivo deste projeto é desenvolver uma barra de navegação que tera opcoes como login e cadastro de usuario, O sistema permitirá que os usuários possam navegar entre as paginas...
-## Stack utilizada
+The system will allow users to navigate between pages according to their session and send e-mails. The main goal was to use the system as a test for the limits of this type of application when applied to the cloud.
+## Stack used
 
-**Front-end:** HTML5, CSS3, BootStrap, JavaScript
+**Front-end:** JS, BootStrap
 
-**Back-end:** Node
+**Back-end:** NodeJS
 
- ## Funcionalidades
+ ## Functionality
 
 - Login
-- Registrer
+- Register
+- Send Emails
+- See accounts info (just for fun)
+
 ---
-     Desenvolvido por @arthurmirandadev
+     Developed by @arthurmirandadev and @jucsalves_
