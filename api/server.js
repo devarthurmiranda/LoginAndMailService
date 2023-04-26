@@ -9,7 +9,7 @@ const path = require('path');
 // Models
 const User = require('../model/User');
 
-// Config EJS and Session
+// Configs
 app.engine('html', require('ejs').renderFile);
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -18,14 +18,15 @@ app.use(session({
     })
 );
 
+app.use(express.json());
+
 // Static files
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, '..' ,'app', 'view', 'public'));
 app.use('/style', express.static(path.join(__dirname, '..', 'app', 'style')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'app', 'view', 'assets')));
 
-
-// Listen to port
+// Listen
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
@@ -37,12 +38,10 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log(err);
 });
 
-
 // Public Routes
 app.get('/', (req, res) => {
     res.render('index');
 });
-
 
 app.get('/login', (req, res) => {
     res.render('login');
@@ -52,24 +51,14 @@ app.get('/register', (req, res) => {
     res.render('register');
 });
 
-
-
-// Config JSON response
-app.use(express.json());
-
-
-
-
 // Register
 app.post('/user/register', async (req, res) => {
     const { username, password } = req.body;
 
-    // Validate
     if (!username || !password) {
         res.status(422).json({ msg: 'Please enter all fields' });
     }
 
-    // Check if user exists
     const userExists = User.findOne({ username }).then((user) => {
         if (user) {
             return true;
@@ -87,7 +76,6 @@ app.post('/user/register', async (req, res) => {
         username,
         password: hash
     });
-    
     try{
         if (await userExists) {
             return res.status(400).json({ msg: 'User already exists' });
