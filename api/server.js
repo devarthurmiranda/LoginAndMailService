@@ -2,19 +2,32 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const session = require('express-session');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 // Models
 const User = require('../model/User');
 
+// Config EJS and Session
+app.engine('html', require('ejs').renderFile);
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    })
+);
+
+// Static files
+app.set('view engine', 'html');
+app.set('views', path.join(__dirname, '..' ,'app', 'view', 'public'));
+app.use('/style', express.static(path.join(__dirname, '..', 'app', 'style')));
+app.use('/assets', express.static(path.join(__dirname, '..', 'app', 'view', 'assets')));
+
+
 // Listen to port
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
-});
-
-// Default route
-app.get('/', (req, res) => {
-    res.send('Server is running successfully');
 });
 
 // Connect to database
@@ -24,11 +37,31 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log(err);
 });
 
+
+// Public Routes
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+
+
 // Config JSON response
 app.use(express.json());
 
+
+
+
 // Register
-app.post('/auth/register', async (req, res) => {
+app.post('/user/register', async (req, res) => {
     const { username, password } = req.body;
 
     // Validate
@@ -44,7 +77,6 @@ app.post('/auth/register', async (req, res) => {
             return false;
         }
     });
-
     
     // Create Password
     const salt = await bcrypt.genSalt(12) // Salt is used to add random string to password when hashing
@@ -70,7 +102,7 @@ app.post('/auth/register', async (req, res) => {
 });
 
 // Login
-app.post('/auth/login', async (req, res) => {
+app.post('/user/login', async (req, res) => {
     const { username, password } = req.body;
 
     // Validate
@@ -89,8 +121,37 @@ app.post('/auth/login', async (req, res) => {
                 return res.status(400).json({ msg: 'Invalid credentials' });
             } else {
                 res.json({ msg: 'Login successful' });
+                req.session.user = user;
             }
         });
     });
 
+});
+
+// Logout
+app.get('/user/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+
+// Check if user is logged in
+const checkLoggedIn = (req, res, next) => {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
+// Private Routes
+app.get('/user/home', (req, res) => {
+    res.render('user/home');
+});
+
+app.get('/user/sendmail', checkLoggedIn, (req, res) => {
+    res.render('user/sendmail');
+});
+
+app.get('/user/accounts', checkLoggedIn, (req, res) => {
+    res.render('user/accounts');
 });
