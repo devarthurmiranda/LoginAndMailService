@@ -15,4 +15,4 @@ The system will allow users to navigate between pages according to their session
 - See accounts info (just for fun)
 
 ---
-     Developed by @arthurmirandadev
+     Developed by @arthurmirandadev and @jucsalves_
