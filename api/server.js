@@ -23,6 +23,7 @@ app.use(express.json());
 // Static files
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, '..' ,'app', 'view', 'public'));
+app.use('/script', express.static(path.join(__dirname, '..', 'app', 'script')));
 app.use('/style', express.static(path.join(__dirname, '..', 'app', 'style')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'app', 'view', 'assets')));
 
@@ -107,10 +108,9 @@ app.post('/user/login', async (req, res) => {
         bcrypt.compare(password, user.password).then((isMatch) => {
             if (!isMatch) {
                 return res.status(400).json({ msg: 'Invalid credentials' });
-            } else {
-                res.json({ msg: 'Login successful' });
-                req.session.user = user;
-            }
+            } 
+            req.session.user = user;
+            res.redirect('/user/home');
         });
     });
 
