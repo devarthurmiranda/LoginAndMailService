@@ -11,6 +11,11 @@ const cors = require('cors');
 const User = require('../model/User');
 
 // Configs
+app.use(cors({
+    origin: '*', // ou defina a origem correta
+    methods: 'GET,POST',
+    allowedHeaders: 'Content-Type,Authorization'
+  }));
 app.engine('html', require('ejs').renderFile);
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -18,13 +23,6 @@ app.use(session({
     saveUninitialized: true,
     })
 );
-app.use(cors());
-
-app.use(cors({
-    origin: '*',
-    methods: 'GET,POST',
-    allowedHeaders: 'Content-Type,Authorization'
-  }));
 
 app.use(express.json());
 
@@ -121,7 +119,7 @@ app.post('/user/login', async (req, res) => {
                 return res.status(400).json({ msg: 'Invalid credentials' });
             } 
             req.session.user = user;
-            res.redirect('/user/home');
+            res.sendStatus(200);
         });
     });
 
