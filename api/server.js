@@ -5,6 +5,7 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const cors = require('cors');
 
 // Models
 const User = require('../model/User');
@@ -17,6 +18,13 @@ app.use(session({
     saveUninitialized: true,
     })
 );
+app.use(cors());
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST',
+    allowedHeaders: 'Content-Type,Authorization'
+  }));
 
 app.use(express.json());
 

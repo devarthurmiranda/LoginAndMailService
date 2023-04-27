@@ -1,23 +1,18 @@
 function submitForm(event) {
     event.preventDefault();
-
-    const username = document.getElementById('usernameInput').value;
-    const password = document.getElementById('passwordInput').value;
+    const name = document.getElementById('usernameInput').value;
+    const pass = document.getElementById('passwordInput').value;
+    const data = { 
+            username : name,
+            password : pass
+        };
 
     fetch('/user/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/html',
         },
-        body: JSON.stringify({ username, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.msg === 'Login successful') {
-            window.location.href = '/user/home';
-        } else {
-            alert('Invalid credentials');
-        }
+        body: JSON.stringify(data)
     })
     .catch(error => {
         console.error('Error:', error);
