@@ -154,6 +154,15 @@ app.get('/user/accounts', checkLoggedIn, (req, res) => {
     res.render('user/accounts');
 });
 
+// Get all accounts
+app.get('/user/getaccounts/', checkLoggedIn, (req, res) => {
+    User.find({}).then((users) => {
+        res.json(users);
+    }).catch((err) => {
+        res.status(400).json({ msg: 'Something went wrong while getting all accounts', err });
+    });
+});
+
 // Send Email
 app.post('/user/sendmail', checkLoggedIn, async (req, res) => {
     const { destinationAddress, subjectLine, emailBody } = req.body;
