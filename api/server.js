@@ -89,14 +89,14 @@ app.post('/user/register', async (req, res) => {
     });
     try{
         if (await userExists) {
-            return res.status(400).json({ msg: 'User already exists' });
+            return res.json({ msg: 'User already exists' });
         } else {
             newUser.save().then((user) => {
                 res.json({ msg: 'User created successfully' });
             })
         }
     } catch(err) {
-        res.status(400).json({ msg: 'Something went wrong while creating User' });
+        res.json({ msg: 'Something went wrong while creating User' });
     }
 });
 
