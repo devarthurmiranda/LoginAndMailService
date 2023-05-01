@@ -4,6 +4,7 @@ function submitForm(event) {
     
     const name = document.getElementById('usernameInput').value;
     const pass = document.getElementById('passwordInput').value;
+    
     const data = { 
         username: name,
         password: pass

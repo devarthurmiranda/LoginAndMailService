@@ -6,6 +6,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 
 // Models
 const User = require('../model/User');
@@ -151,4 +152,32 @@ app.get('/user/sendmail', checkLoggedIn, (req, res) => {
 
 app.get('/user/accounts', checkLoggedIn, (req, res) => {
     res.render('user/accounts');
+});
+
+// Send Email
+app.post('/user/sendmail', checkLoggedIn, async (req, res) => {
+    const { destinationAddress, subjectLine, emailBody } = req.body;
+
+    let transporter = nodemailer.createTransport({
+        service: 'Outlook',
+        auth: {
+            user: process.env.USER_EMAIL,
+            pass: process.env.USER_EMAIL_PASSWORD
+        }
+    });
+
+    if (!destinationAddress || !subjectLine || !emailBody) {
+        res.status(422).json({ msg: 'Please enter all fields' });
+    }
+    transporter.sendMail({
+        from: process.env.USER_EMAIL,
+        to: destinationAddress,
+        replyTo: process.env.USER_EMAIL,
+        subject: subjectLine,
+        text: emailBody
+    }).then(() => {
+        res.json({ msg: 'Email sent successfully'});
+    }).catch((err) => {
+        res.status(400).json({ msg: 'Something went wrong while sending mail', err });
+    });
 });
